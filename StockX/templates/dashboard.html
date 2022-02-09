@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
+    <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
+<!--  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+   KLS Stock
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+  <!-- CSS Files -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/paper-dashboard.css' %}" rel="stylesheet" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link href="{% static 'demo/demo.css' %}" rel="stylesheet" />
+   <link href="{% static 'css/backImage.css' %}" rel="stylesheet" type="text/css" />
+   <link href="{% static 'css/blinking.css' %}" rel="stylesheet" type="text/css" />
+</head>
+<script >
+
+    window.onload = function(){
+<!--    var l1 = ['1999','2001','2003','2005','2007','2009', '2011', '2013', '2015', '2017', '2019', '2020']-->
+<!--     var l1 = ['1999','','2003','','2007','', '2011', '', '2015', '', '2019', '']-->
+<!--    var l2 = [80.125, 21.625, 14.36, 76.9, 85.73, 90.13, 339.32, 455.49, 117.16, 143.66, 166.44,{{x.11}}]-->
+<!--     var l2 = [80.125, 21.625, 14.36, 76.9, 85.73, 90.13, 339.32, 455.49, 117.16, 143.66, ,{{x.11}}]-->
+    var a = 10;
+
+    var l1 = {{x|safe}}
+    var l2 = {{z}}
+    var my = "Month"
+    var labelStringGraph = "{{graphType}}"
+    var ctx1 = document.getElementById("chartHours").getContext('2d');
+    var ctx2 = document.getElementById("BarChart").getContext('2d');
+
+<!--    if (my.localeCompare("{{graphType}}") == 0){-->
+<!--        l1 =     ['1','2','3','4','5','6','7','8','9','10','11','12']-->
+<!--        l2 = {{x}}-->
+<!--        labelStringGraph = "Month"-->
+<!--    }-->
+    var my_gradient = ctx1.createLinearGradient(0, 100, 0, 400);
+    my_gradient.addColorStop(0, "lightGreen");
+    my_gradient.addColorStop(1, "white");
+    var myChart1 = new Chart(ctx1, {
+    type: 'line',
+      data: {
+	   labels: l1,
+
+	  datasets: [{
+
+		  data: l2,
+
+		  backgroundColor: my_gradient,
+		  backgroundColor :['rgba(255,255,255, 0.2)',
+				'rgba(255,255,255,0)',
+				'rgba(255,255,255,0)',
+			  	'rgba(255,255,255, 0)',
+				'rgba(255,255,255, 0)',
+				'rgba(255,255,255, 0)'
+          ],
+
+          borderColor: [
+				'rgba(0,100,0,1)',
+				'rgba(0 , 0 , 0 , 1)',
+				'rgba(0 , 0 , 0 , 1)',
+				'rgba(0 , 0 , 0 , 1)',
+				'rgba(0 , 0 , 0 , 1)',
+				'rgba(0 , 0 , 0 , 1)'
+			],
+borderWidth : 1
+	}
+	]
+},
+options: {
+
+        bezierCurve : false,
+         responsive:true,
+
+         customLine: {
+             color: 'black'
+          },
+         tooltips:{intersect: false},
+
+		scales: {
+			yAxes: [{
+
+
+				ticks: {
+<!--					beginAtZero:true,-->
+					maxTicksLimit:10
+
+				},
+<!--				elements :{-->
+<!--				    point :{-->
+<!--				        radius : 10,-->
+<!--				        display : true-->
+<!--				    }-->
+<!--				},-->
+
+				scaleLabel: {
+                    display: true,
+                    labelString: "Stock Price",
+                    fontSize:15,
+                  },
+
+				gridLines:{
+
+				    drawBorder:true,
+				    display:false
+				}
+			}],
+
+			xAxes:[{
+                    scaleLabel: {
+                    display: true,
+                    labelString: labelStringGraph,
+                    fontSize:15,
+
+                  },
+			      gridLines:{
+
+				    drawBorder:true,
+				    display:true,
+				    drawTicks:true
+				},
+				ticks :{
+				    autoSkip:true,
+				    maxTicksLimit:8,
+				    beginAtZero: false,
+				    maxRotation:0,
+				    minRotation:0,
+				  display : true
+				}
+			}]
+		},
+
+
+
+plugins: [{
+beforeEvent: function(chartHours, e) {
+if ((e.type === 'mousemove')
+&& (e.x >= e.chart.chartArea.left)
+&& (e.x <= e.chart.chartArea.right)
+) {
+chart.options.customLine.x = e.x;
+}
+},
+afterDraw: function(chartHours, easing) {
+var ctx1 = chartHours.chartHours.ctx1;
+var chartArea = chartHours.chartArea;
+var x = chartHours.options.customLine.x;
+
+  if (!isNaN(x)) {
+    ctx1.save();
+    ctx1.strokeStyle = chart.options.customLine.color;
+    ctx1.moveTo(chart.options.customLine.x, chartArea.bottom);
+    ctx1.lineTo(chart.options.customLine.x, chartArea.top);
+    ctx1.stroke();
+    ctx1.restore();
+  }
+ }
+}],
+
+<!--		maintainAspectRatio: false,-->
+		legend:{display: false},
+		elements:{
+		    point:{
+		      radius:0
+
+		    },
+		    line :{
+		      tension : 0
+		    }
+		},
+	}
+});
+
+
+
+l1 = ["Apple", "Microsoft", "Goldman Sachs", "Google", "Amazon", "Adobe", "Oracle", "FaceBook"]
+l2 = {{sp|safe}}
+var myChart2 = new Chart(ctx2, {
+    type: 'bar',
+      data: {
+	   labels: l1,
+
+	  datasets: [{
+
+		  data: l2,
+		  backgroundColor :['rgba(47,79,79, 0.2)',
+				'rgba(47,79,79,  0.2)',
+				'rgba(47,79,79,  0.2)',
+			  	'rgba(47,79,79,  0.2)',
+				'rgba(47,79,79,  0.2)',
+				'rgba(47,79,79,  0.2)',
+				'rgba(47,79,79,  0.2)',
+				'rgba(47,79,79,  0.2)'
+          ],
+
+          borderColor: [
+
+				'rgba(0, 0, 0,1)',
+				'rgba(0, 0, 0,1)',
+				'rgba(0, 0, 0, 1)',
+				'rgba(0, 0, 0, 1)',
+				'rgba(0, 0, 0, 1)',
+				'rgba(0, 0, 0, 1)',
+				'rgba(0, 0, 0, 1)',
+				'rgba(0, 0, 0, 1)'
+
+			],
+borderWidth : 1
+	}
+	]
+},
+options: {
+
+        responsive:true,
+         tooltips:{mode:'index', intersect: false},
+       hover: {
+          mode:'nearest',
+          intersect:true,
+        },
+		scales: {
+			yAxes: [{
+				ticks: {
+					beginAtZero:true,
+			        maxTicksLimit:10
+				},
+
+				scaleLabel: {
+                    display: true,
+                    labelString: "Stock Price",
+                    fontSize:15,
+                  },
+
+				gridLines:{
+
+				    drawBorder:true,
+    			    display:false
+				}
+			}],
+
+			xAxes:[{
+                    scaleLabel: {
+                    display: true,
+                    labelString: "Company Names",
+                    fontSize:15
+                  },
+                gridLines:{
+
+				    drawBorder:true,
+    			    display:false
+				}
+				}],
+		},
+
+<!--		maintainAspectRatio: false,-->
+		legend:{display: false},
+		elements:{
+		    point:{
+		      radius:0
+		    }
+		},
+	}
+});
+}
+</script>
+
+<body class="">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="DimGrey" data-active-color="danger">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+    -->
+      <div class="logo">
+        <a href="/" class="simple-text logo-normal">
+            <font size="+3" style="color : Black"><b>&nbsp;&nbsp;&nbsp;&nbsp;$tockX</b></font>
+          <!-- <div class="logo-image-big">
+            <img src="../assets/img/logo-big.png">
+          </div> -->
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+
+           <li class="active">
+            <a href="/">
+<!--              <i class="nc-icon nc-chart-bar-32"></i>-->
+                <i class="fa fa-line-chart"></i>
+              <p>Analysis</p>
+            </a>
+          </li>
+          <li>
+            <a href="/table">
+              <i class="nc-icon nc-bullet-list-67"></i>
+              <p>Company List</p>
+            </a>
+          </li>
+          <li>
+            <a href="/document">
+                     <i class="nc-icon nc-tag-content"></i>
+              <p>About Stocks</p>
+            </a>
+          </li>
+          <li>
+            <a href="/about">
+<!--              <i class="nc-icon nc-single-02"></i>-->
+                <i class="fa fa-group"></i>
+              <p>Team Members</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel" style="background-color:Black">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
+        <div class="container-fluid" style="width : 100%">
+            <p style="width : 100%"><marquee scrollamount = "30"><font color="White" size="5">$tockX&nbsp;&nbsp;&nbsp;</font>
+                <font color="Red" size="5"> Predicted&nbsp;&nbsp;</font>
+                <font color="Green" size="5">{{companyName}} <i class="{{symbol}}"></i>&nbsp;</font>
+                <font color="Red" size="5"> ${{y}}({{interval}})</font>
+            <font color="White" size="5">&nbsp;&nbsp;&nbsp;$tockX</font></marquee></p>
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <!-- <div class="panel-header panel-header-lg">
+
+  <canvas id="bigDashboardChart"></canvas>
+
+
+</div> -->
+
+      <div class="content">
+        <form action="/" method="POST">
+           {% csrf_token %}
+        <div class="row">
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+              <div class="card-body ">
+                <div class="row">
+                  <div class="col-5 col-md-4">
+                    <div class="icon-big text-center icon-warning">
+<!--                      <i class="nc-icon nc-money-coins text-success"></i>-->
+                    </div>
+                  </div>
+                  <div class="col-7 col-md-8">
+                    <div class="numbers">
+                      <p class="card-category" style="text-align : left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          <i class="{{symbol}}" style="font-size:22px; color : Black"></i></p>
+                        <input  align="centre" value="{{companyName}}" name="dashCompany" type="text"
+                                style="Border:None; background:transparent; cursor : Default; outline:None" readonly >
+                        <p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+<!--              <div class="card-footer ">-->
+<!--                <hr>-->
+<!--                <div class="stats">-->
+<!--                  <i class="fa fa-refresh"></i> Update Now-->
+<!--                </div>-->
+<!--              </div>-->
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats" >
+              <div class="card-body ">
+                <div class="row">
+<!--                  <div class="col-5 col-md-4">-->
+<!--&lt;!&ndash;                    <div class="icon-big text-center icon-warning">&ndash;&gt;-->
+<!--&lt;!&ndash;                      <i class="nc-icon nc-money-coins text-success"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                  </div>-->
+                  <div class="col-7 col-md-8">
+                    <div class="numbers">
+
+                      <p class="card-category"><i class="fa fa-line-chart" style="color : DarkGreen;font-size : 22px;">
+                      </i>&nbsp;&nbsp;<b style="color : Black">Pred ({{interval}})</b> </p>
+                      <p class="card-title"> ${{y}}
+                        <p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats" >
+              <div class="card-body ">
+                <div class="row">
+<!--                  <div class="col-5 col-md-4">-->
+<!--                    <div class="icon-big text-center icon-warning">-->
+<!--                      <i class="nc-icon nc-money-coins text-success"></i>-->
+<!--                    </div>-->
+<!--                  </div>-->
+                  <div class="col-7 col-md-8">
+                    <div class="numbers">
+                        <p class="card-category" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <i class="fa fa-circle Blink" style="color : Red;"></i>&nbsp;
+                            <b style="color : Black">Live</b></p>
+                      <p class="card-title">${{currentStock}}
+                        <p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats" >
+              <div class="card-body ">
+                <div class="row">
+<!--                  <div class="col-5 col-md-4">-->
+<!--                    <div class="icon-big text-center icon-warning">-->
+<!--                      <i class="nc-icon nc-money-coins text-success"></i>-->
+<!--                    </div>-->
+<!--                  </div>-->
+                  <div class="col-7 col-md-8">
+                    <div class="numbers">
+                      <p class="card-category"><i class="nc-icon nc-chart-bar-32" style="font-size:22px;color : Black"></i>
+                          &nbsp;<b style="color : Black">{{maxStockCompany}}</b>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                        <div class="spinner-grow" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+                      <p class="card-title">${{maxStock}}
+                        </p><p>
+                    </p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="background-color : transparent">
+          <div class="col-md-12">
+            <div class="card ">
+              <div class="card-header ">
+                  <h5 style="margin-left:50px">
+
+                    <input class="active" style="margin-left:20px; background:Transparent; border: None;
+                    {{underline1}};font-size:20px;outline:None; cursor:pointer" type="submit" name="1 day" value="1 day">
+                  </h5>
+              </div>
+              <div class="card-body " style=" linear-gradient(red, yellow, blue);">
+                <canvas id=chartHours width="400" height="100"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+           <div class="row">
+          <div class="col-md-12">
+            <div class="card " style="background-color: White">
+              <div class="card-header ">
+                  <h5 style="margin-left:50px"><marquee scrollamount = "20"><b>Live&nbsp;&nbsp;
+                      <font color="red">Apple-${{sp.0}}</font>
+                      <font color="Green">Microsoft-${{sp.1}}&nbsp;</font>
+                      <font color="Red">GoldmanSachs-${{sp.2}}&nbsp;</font>
+                      <font color="Green"> Google-${{sp.3}}&nbsp;</font>
+                      <font color="Red"> Amazon-${{sp.4}}&nbsp;</font>
+                      <font color="Green"> Adobe-${{sp.5}}&nbsp;</font>
+                      <font color="Red"> Oracle-${{sp.6}} &nbsp;</font>
+                      <font color="Green">Facebook-${{sp.7}}</font></b></marquee>
+                  </h5>
+              </div>
+              <div class="card-body ">
+                <canvas id=BarChart width="400" height="100"></canvas>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </form>
+      </div>
+  <!--   Core JS Files   -->
+  <script src="{% static 'js/core/jquery.min.js' %}"></script>
+  <script src="{% static 'js/core/popper.min.js' %}"></script>
+  <script src="{% static 'js/core/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/plugins/perfect-scrollbar.jquery.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js">
+</script>
+  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{% static 'js/paper-dashboard.min.js' %}" type="text/javascript"></script>
+  <!-- Paper Dashboard DEMO methods, don't include it in your project! -->
+  <script src="{% static 'demo/demo.js' %}"></script>
+<!--      <script src ="{% static 'js/canvasTemp.js' %}" type="text/javascript"></script>-->
+
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+              integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ </body>
+
+</html>
